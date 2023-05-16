@@ -1,0 +1,7 @@
+{
+  "name": "comproaki",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue"
+}
