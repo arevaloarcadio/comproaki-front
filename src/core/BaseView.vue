@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { IonContent, IonButtons, IonBackButton, IonPage, IonHeader, IonTitle, IonToolbar } from '@ionic/vue';
+import { IonContent, IonButtons, IonBackButton, IonPage, IonHeader, IonTitle, IonToolbar,IonIcon, IonTabBar, IonTabButton, IonTabs  } from '@ionic/vue';
 </script>
 
 <template>
@@ -14,8 +14,10 @@ import { IonContent, IonButtons, IonBackButton, IonPage, IonHeader, IonTitle, Io
 				</ion-title>
 			</ion-toolbar>
 		</ion-header>
-		<ion-content>
+		
+		<ion-content class="ion-padding">
 			<slot name="default-view-body"></slot>
 		</ion-content>
+		<slot name="default-view-footer"></slot>
 	</ion-page>
 </template>

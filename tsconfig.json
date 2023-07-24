@@ -17,7 +17,10 @@
 			"pages/*": ["pages/*"],
 			"stores/*": ["stores/*"],
 			"styles/*": ["styles/*"]
-		}
+		},
+		"types": [
+			"pinia-plugin-persist"
+		]
 	},
 	"include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
 	"exclude": ["node_modules"]

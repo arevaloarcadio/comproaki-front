@@ -1,27 +1,26 @@
-<script setup lang="ts">
-import { reactive } from 'vue';
+<script>
 
-import { storeToRefs } from 'pinia';
+import { defineComponent } from 'vue';
+import { mapGetters } from "vuex";
+import { useUserStore } from '@/plugins/store'
 
-import { IonButton, IonCard, IonCardHeader, IonCardSubtitle, IonCardContent } from '@ionic/vue';
+export default defineComponent({
+	name: 'Index',
+  	beforeMount(){
+		const store = useUserStore()
+		const user = store.getUser
 
-import useStore from '../stores/main';
-
-const mainStore = useStore();
-
-const { welcomeText } = storeToRefs(mainStore);
-// If you do not want to use 'welcomeText.value', wrap it in a reactive object.
-// It can be easier for people migrating from vue 2.
-const data = reactive({
-	introductionText: welcomeText.value
+      	if (user == null) {
+			this.$router.push('/pages/login')
+    	}else{
+			this.$router.push('/dashboard')
+		}
+	}
 });
-
-// eslint-disable-next-line no-console
-if (data.introductionText === welcomeText.value) console.log(data.introductionText);
 </script>
 
 <template>
-	<base-view id="home-page">
+	<!--<base-view id="home-page">
 		<template #default-view-title>
 			<div class="text-center">Home Page</div>
 		</template>
@@ -40,5 +39,5 @@ if (data.introductionText === welcomeText.value) console.log(data.introductionTe
 				</ion-card>
 			</div>
 		</template>
-	</base-view>
+	</base-view>-->
 </template>
