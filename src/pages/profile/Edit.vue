@@ -137,6 +137,8 @@ export default defineComponent({
   },
   mounted(){
     this.user = this.userStore.getUser
+    this.user.password = null
+    this.user.password_confirmation = null
     document.querySelector('#image-store').src = this.baseURL+this.user.image
   },
   methods:{
@@ -150,8 +152,8 @@ export default defineComponent({
 
       formData.append("firstname",this.user.firstname)
       formData.append("lastname",this.user.lastname)
-      formData.append("password",this.user.password)
-      formData.append("password_confirmation",this.user.password_confirmation)
+      formData.append("password",this.user.password == null ? '' : this.user.password)
+      formData.append("password_confirmation",this.user.password_confirmation == null ? '' : this.user.password_confirmation)
       formData.append("image",this.image)
 
       this.userStore.editProfile(formData)

@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { IonContent, IonButtons, IonBackButton, IonPage, IonHeader, IonTitle, IonToolbar,IonIcon, IonTabBar, IonTabButton, IonTabs  } from '@ionic/vue';
+import { menuOutline } from 'ionicons/icons'
 </script>
 
 <template>
 	<ion-page>
-		<ion-header>
+		<slot name="slot-view-title"></slot>
+
+		<ion-header class="header-default-view-title">
 			<ion-toolbar>
 				<ion-buttons slot="start">
 					<ion-back-button></ion-back-button>

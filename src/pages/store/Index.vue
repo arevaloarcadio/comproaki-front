@@ -13,7 +13,7 @@
                   size="large"
                 ></ion-icon>
               </i>
-              <input type="text"  placeholder="Buscar" class="input-text-box-search">
+              <input type="text" placeholder="Buscar" class="input-text-box-search">
             </div>
           </div>
         </ion-col>
@@ -26,7 +26,12 @@
 		</template>
 
     <template #default-view-body>
-      <CardDashboard v-if="loading" :data="products.data" @clickData="getKeyStore($event)"></CardDashboard>
+      <CardDashboard 
+        v-if="loading" 
+        :data="stores?.data" 
+        :tags="true"
+        @clickData="getKeyStore($event)"
+      ></CardDashboard>
     </template>
 
     <template #default-view-footer>
@@ -52,7 +57,7 @@ import {
 } from '@ionic/vue';
 import { storefrontOutline, search } from 'ionicons/icons';
 import axios from 'axios'
-import CardDashboard from '@/components/CardProduct.vue'
+import CardDashboard from '@/components/CardDashboardComponent.vue'
 
 export default {
   name: 'Dashboard',
@@ -73,12 +78,12 @@ export default {
     }
   },
   mounted(){
-    this.getProductStoreUsers()
+    this.getStores()
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
     });
-    this.getProductStoreUsers()
+    this.getStores()
   },
   setup(){ 
     
@@ -102,7 +107,7 @@ export default {
       this.$router.push({path : '/store/'+store.id, query : {...store}})
     },
     getStores(){
-      axios.get('/api/stores/byUser')
+      axios.get('/api/stores')
       .then(res => {
         this.stores = res.data.data
       }).catch(error => {
@@ -111,16 +116,6 @@ export default {
         this.loading = true
       })
     },
-    getProductStoreUsers(){
-      axios.get('/api/products/byStoreUser')
-      .then(res => {
-        this.products = res.data.data
-      }).catch(error => {
-        console.log(error)
-      }).finally(()=>{
-        this.loading = true
-      })
-    }
   }
 };
 

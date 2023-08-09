@@ -3,42 +3,58 @@
     <ion-toolbar>
       <ion-row>
           <ion-col>
-            <ion-tab-button tab="listen" class="active" >
-              <div style="text-align: center;">
-                <ion-icon :icon="playCircle"></ion-icon>
+            <ion-tab-button 
+              tab="dashboard" 
+              :class="{'active' : $route.path == '/dashboard'}" 
+              @click="$router.push('/dashboard')"
+            >
+              <div class="item-center">
+                <ion-icon :icon="layersOutline"></ion-icon>
               </div>
-              <div style="text-align: center;">
-                <ion-label>Listen Now</ion-label>
-              </div>
-            </ion-tab-button>
-          </ion-col>
-          <ion-col>
-            <ion-tab-button tab="radio">
-              <div style="text-align: center;">
-                <ion-icon :icon="radio"></ion-icon>
-              </div>
-              <div style="text-align: center;">
-                <ion-label>Radio</ion-label>
+              <div class="item-center">
+                <ion-label>Dashboard</ion-label>
               </div>
             </ion-tab-button>
           </ion-col>
           <ion-col>
-            <ion-tab-button tab="library">
-              <div style="text-align: center;">
-                <ion-icon :icon="library"></ion-icon>
+            <ion-tab-button 
+              tab="store" 
+              :class="{'active' : $route.path == '/store'}" 
+              @click="$router.push('/store')"
+            >
+              <div class="item-center">
+                <ion-icon :icon="storefrontOutline"></ion-icon>
               </div>
-              <div style="text-align: center;">
-                <ion-label>Library</ion-label>
+              <div class="item-center">
+                <ion-label>Tiendas</ion-label>
               </div>
             </ion-tab-button>
           </ion-col>
-          <ion-col>
-            <ion-tab-button tab="search">
-              <div style="text-align: center;">
-                <ion-icon :icon="search"></ion-icon>
+          <!--<ion-col>
+            <ion-tab-button 
+              tab="products" 
+              :class="{'active' : $route.path == '/profile/myproducts'}" 
+              @click="$router.push('/profile/myproducts')"
+            >
+              <div class="item-center">
+                <ion-icon :icon="pricetagsOutline"></ion-icon>
               </div>
-              <div style="text-align: center;">
-                <ion-label>Search</ion-label>
+              <div class="item-center">
+                <ion-label>Productos</ion-label>
+              </div>
+            </ion-tab-button>
+          </ion-col>-->
+          <ion-col>
+            <ion-tab-button 
+              tab="profile" 
+              :class="{'active' : $route.path == '/profile'}" 
+              @click="$router.push('/profile')"
+            >
+              <div class="item-center">
+                <ion-icon :icon="personOutline"></ion-icon>
+              </div>
+              <div class="item-center">
+                <ion-label>Perfil</ion-label>
               </div>
             </ion-tab-button>
           </ion-col>
@@ -47,7 +63,7 @@
   </ion-footer>
 </template>
 
-<script>
+<script lang="ts">
 
 import {
   IonImg, 
@@ -61,7 +77,7 @@ import {
   IonCardTitle
 } from '@ionic/vue'
 
-import { playCircle, radio, library, search } from 'ionicons/icons';
+import { layersOutline, storefrontOutline, pricetagsOutline, personOutline } from 'ionicons/icons';
 
 export default {
   name: 'MenuTabs',
@@ -82,7 +98,7 @@ export default {
   },
   setup(){ 
     return{
-      playCircle, radio, library, search
+      layersOutline, storefrontOutline, pricetagsOutline, personOutline
     }
   }
 };
@@ -101,7 +117,11 @@ export default {
     width: 100%;
   }
 
-  .active{
+  .active {
     color: #2dd36f;
   } 
+
+  .item-center {
+    text-align: center;
+  }
 </style>

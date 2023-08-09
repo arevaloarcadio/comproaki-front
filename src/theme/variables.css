@@ -9,8 +9,9 @@ http://ionicframework.com/docs/theming/ */
 }
 
 :root {
+  --ion-font-family: 'Poppins';
   /** primary **/
-  --ion-color-primary: #2dd36f;
+  --ion-color-primary: #03993f;
   --ion-color-primary-rgb: 45, 211, 111;
   --ion-color-primary-contrast: #fff;
   --ion-color-primary-contrast-rgb: 0, 0, 0;
@@ -85,7 +86,7 @@ http://ionicframework.com/docs/theming/ */
 @media (prefers-color-scheme: dark) {
 
   .label-input{
-  color: #2dd36f;
+  color: var( --ion-color-primary);
   font-size: 12px;
   letter-spacing: 0.4px;
   line-height: 20px;
@@ -273,7 +274,7 @@ body:focus{ outline: none; }
 
 @media (prefers-color-scheme: light ) {
   .label-input{
-    color: #2dd36f;
+    color: var( --ion-color-primary);
     font-size: 12px;
     letter-spacing: 0.4px;
     line-height: 20px;
@@ -323,7 +324,7 @@ body:focus{ outline: none; }
   font-weight: normal;
   font-size: 16px;
   line-height: 20px;
-  color: #2dd36f;
+  color: var( --ion-color-primary);
 }
 
 .input-textarea{
@@ -343,11 +344,11 @@ body:focus{ outline: none; }
   font-weight: normal;
   font-size: 16px;
   line-height: 20px;
-  color: #2dd36f !important;
+  color: var( --ion-color-primary) !important;
 }
 
 .label-input-box-search{
-  color: #2dd36f;
+  color: var( --ion-color-primary);
   font-family: Poppins;
   font-size: 12px;
   letter-spacing: 0.4px;
@@ -421,6 +422,7 @@ div,
 ion-label,
 ion-select-option,
 ion-select,
+ion-item,
 ion-row,
 ion-card-title,
 ion-card-content,
@@ -439,7 +441,7 @@ button
 }
 
 .hearder-app{
-  color: #2dd36f;
+  color: var( --ion-color-primary);
   text-align: center;
   font-weight: 500;
   font-size: 20px;
@@ -469,6 +471,53 @@ button
   top:61%; 
   left: 52%; 
   border-radius: 95%;
-  background: #2dd36f;
+  background: var( --ion-color-primary);
   border: none;
+}
+
+.hidden{
+  display: none;
+}
+
+.icon-color-primary{
+  color: var( --ion-color-primary);
+}
+
+.store-selected {
+  background-color: #bfcbc3;
+  color:#000;    
+}
+
+.data-selected {
+  background-color: #bfcbc3;   
+  color:#000;  
+}
+
+.tag-icon{
+  color:  var( --ion-color-primary);
+  position: absolute;
+  margin-left: -30px;
+  margin-top: -3px;
+}
+
+.row-tags{
+  display: flex;flex-direction: row;align-items: center;padding: 4px 4px;
+}
+
+.item-tag{
+  background: transparent;
+  border: 1px solid  var( --ion-color-primary);
+  padding: 4px 18px 3px 4px;
+  border-radius: 4px;
+}
+
+.item-store-tag{
+  background: transparent;
+  border: 1px solid  var( --ion-color-primary);
+  padding: 4px 5px 3px 4px;
+  border-radius: 4px;
+  color:  var( --ion-color-primary);
+}
+.not-white-space{
+  white-space: break-spaces !important;
 }

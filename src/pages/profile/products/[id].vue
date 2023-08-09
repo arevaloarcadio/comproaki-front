@@ -42,6 +42,14 @@
                   </div>
                 </div>
               </ion-col>
+              <ion-col sizeXs="12">
+                <div class="container">
+                  <label class="label-input">Precio</label>
+                  <div class="input-container">
+                    <input type="number" v-model="price" class="input-text">
+                  </div>
+                </div>
+              </ion-col> 
               <ion-col  sizeXs="12">
                 <div class="container">
                   <label class="label-input">Descripción</label>
@@ -63,6 +71,13 @@
         </ion-row>
       </diV>
     </template>
+    <template #default-view-footer>
+      <ion-footer>
+			  <ion-toolbar>
+				  <MenuTabs/>
+			  </ion-toolbar>
+		  </ion-footer>
+    </template>
   </base-view>
 </template>
 
@@ -83,6 +98,7 @@ import toast from '@/plugins/toast'
 import axios from 'axios'
 import countries from '@/data/countries.js'
 import data_states from '@/data/states.json'
+import { setUrl } from '@/plugins/utils/img-src' 
 
 export default defineComponent({
   name: 'App',
@@ -102,6 +118,7 @@ export default defineComponent({
   },
   data() {
     return {
+      setUrl,
       baseURL: axios.defaults.baseURL,
       countries,
       stores: [],
@@ -112,6 +129,7 @@ export default defineComponent({
       state: null,
       country: null,
       phone: null,
+      price: null,
       description: null,
       image : null
     }
@@ -120,9 +138,10 @@ export default defineComponent({
     this.getStores()
     this.getStore()
     this.id = this.$route.query.id 
-    this.name = this.$route.query.name  
+    this.name = this.$route.query.name 
+    this.price = this.$route.query.price  
     this.description  = this.$route.query.description 
-    document.querySelector('#image-store').src = this.baseURL+this.$route.query.image  
+    document.querySelector('#image-store').src = this.setUrl(this.$route.query.image)  
    // this.getStates()
   },
   methods:{
@@ -137,6 +156,7 @@ export default defineComponent({
       //formData.append("store_id",this.store_id)
       formData.append("image",this.image)
       formData.append("description",this.description)
+      formData.append("price",this.price)
 
       axios.post('/api/products/'+this.id,formData)
       .then(res => {
@@ -150,9 +170,11 @@ export default defineComponent({
       })
     },
     getStores(){
-      axios.get('/api/stores')
+      axios.get('/api/stores/byUser/all')
       .then(res => {
         this.stores = res.data.data
+        console.log(this.stores)
+        //this.store_id = this.stores.data[0].id
       }).catch(error => {
         console.log(error)
       })

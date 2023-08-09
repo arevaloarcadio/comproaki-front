@@ -1,7 +1,6 @@
 <script>
 
 import { defineComponent } from 'vue';
-import { mapGetters } from "vuex";
 import { useUserStore } from '@/plugins/store'
 
 export default defineComponent({

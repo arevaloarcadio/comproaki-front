@@ -39,13 +39,25 @@
                   <label class="label-input">Tienda</label>
                   <div class="input-container">
                     <ion-select  interface="popover" v-model="store_id" class="input-text" disabled="true">
-                      <ion-select-option v-for="store in stores" :key="store" :value="store.id">
+                      <ion-select-option v-for="store in stores.data" :key="store" :value="store.id">
                         {{store.name}}
                       </ion-select-option>
                     </ion-select>
                   </div>
                 </div>
               </ion-col>
+              
+              
+              
+              <ion-col sizeXs="12">
+                <div class="container">
+                  <label class="label-input">Precio</label>
+                  <div class="input-container">
+                    <input type="number" v-model="price" class="input-text">
+                  </div>
+                </div>
+              </ion-col> 
+
               <ion-col  sizeXs="12">
                 <div class="container">
                   <label class="label-input">Descripción</label>
@@ -67,6 +79,14 @@
         </ion-row>
       </div>
     </template>
+    <template #default-view-footer>
+      <ion-footer>
+			  <ion-toolbar>
+				  <MenuTabs/>
+			  </ion-toolbar>
+		  </ion-footer>
+    </template>
+    
   </base-view>
 </template>
 
@@ -130,10 +150,11 @@ export default defineComponent({
   },
   methods:{
      getStores(){
-      axios.get('/api/stores')
+      axios.get('/api/stores/byUser')
       .then(res => {
         this.stores = res.data.data
-        this.store_id = this.stores[0].id
+        console.log(this.stores)
+        this.store_id = this.stores.data[0].id
       }).catch(error => {
         console.log(error)
       })
@@ -146,6 +167,7 @@ export default defineComponent({
       var formData = new FormData();
 
       formData.append("name",this.name)
+      formData.append("price",this.price)
       formData.append("store_id",this.store_id)
       formData.append("image",this.image)
       formData.append("description",this.description)

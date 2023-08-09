@@ -8,5 +8,12 @@
   },
   "ios": {
     "path": "./src-capacitor/ios"
-  }
+  },
+  "plugins": {
+    "GoogleAuth": {
+      "scopes": ["profile", "email"],
+      "serverClientId": "511082775217-uh7co91g3d0vpupg0gnicsdl8ugfn47f.apps.googleusercontent.com",
+      "forceCodeForRefreshToken": true
+    },
+  },
 }

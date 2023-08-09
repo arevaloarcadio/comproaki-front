@@ -28,6 +28,18 @@ export const useUserStore = defineStore("user", {
      
       return res
     },
+    async signUpProvider(name,email,image,auth_provider) {
+      const res = await axios.post("/auth/provider/login",{
+        name,
+        email,
+        image,
+        auth_provider
+      });
+     
+      res.data.user ? this.user = JSON.stringify(res.data.user) : null
+     
+      return res
+    },
     async signIn(email, password) {
       const res = await axios.post("/auth/login",{
          email, 

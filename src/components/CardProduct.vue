@@ -1,11 +1,16 @@
 <template>
   <ion-row>
-    <ion-col v-for="(dat,key) in data" :key="dat" sizeLg="3" sizeMd="4" sizeXs="6" @click="$emit('clickData',dat)">
-      <ion-card>
+    <ion-col v-for="(dat,key) in data" :key="dat" sizeLg="3" sizeMd="4" sizeXs="6">
+      <ion-card 
+        class="touchstart" 
+        :id="label+'-'+key" 
+        @touchstart="touch($event,dat)"
+        @click="$emit('clickData',dat)"
+      >
         <ion-img 
           :id="'img-'+key"
           :alt="dat.name" 
-          style="height: 200px;width: auto;" 
+          style="height:200px;width: auto;" 
           :src="setUrl(dat.image)" 
         />
         <ion-card-header 
@@ -27,25 +32,33 @@
         <ion-card-content 
           :id="'content-'+key"
         >
-          <div v-if="tags" id="container-items-tag">
-            <ion-row id="ion-row-items-tag">
-              <div v-for="(tag,key) in dat.tags" :key="tag" class="row-tags">
-                <div class="item-store-tag">
-                  {{tag.name}}
-                </div>
+        <ion-card-title 
+          :id="'title-'+key"
+        >
+            <b>
+              {{dat.price}} €
+            </b>
+        </ion-card-title>
+        <!--<div v-if="tags" id="container-items-tag">
+          <ion-row id="ion-row-items-tag">
+            <div v-for="(tag,key) in dat.tags" :key="tag" class="row-tags">
+              <div class="item-store-tag">
+                {{tag.name}}
               </div>
-            </ion-row>
-          </div>
+            </div>
+          </ion-row>
+        </div>-->
         </ion-card-content>
       </ion-card>
     </ion-col>
   </ion-row>
+  
 </template>
 
 <script>
 
 import {
-  IonImg,
+  IonImg, 
   IonCard, 
   IonCardContent, 
   IonCardHeader,
@@ -57,13 +70,14 @@ import {
 } from '@ionic/vue'
 
 import axios from 'axios'
-import { setUrl } from '@/plugins/utils/img-src' 
+import { setUrl } from '@/plugins/utils/img-src'
 
 export default {
   name: 'Card',
   props: {
     data: Array,
-    tags:{
+    label: String,
+    touch:{
       type: Boolean,
       default: false
     },
@@ -81,13 +95,22 @@ export default {
   },
   data() {
     return {
-      setUrl,
       baseURL: axios.defaults.baseURL,
+      dataSelected: null,
+      setUrl
     }
   },
   mounted(){
-    console.log(this.data)
-    console.log("montado el card")
+  },
+  updated(){
+  },
+  methods:{
+    touch(ev,data){
+      this.$emit("touchData",{
+        event: ev,
+        data: data
+      })
+    }
   }
 };
 </script>

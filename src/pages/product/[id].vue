@@ -1,32 +1,61 @@
 <template>
   <base-view>
-    <template #default-view-title>
-      <div class="hearder-app">
-        {{store.name}}
-      </div>
-		</template>
     <template  #default-view-body>
       <br>
-      <div style="justify-content:center;display:flex;">
-        <img :alt="product.name" class="img-details" :src="baseURL+product.image" />
-      </div>
-      <br>
       <ion-row>
-        <ion-col size="12" class="product-name"><b>{{product.name}}</b></ion-col>
-        <ion-col size="12" class="product-description">Descripción</ion-col>
-        <ion-col size="12" class="product-name">{{product.description}}</ion-col>
-        <ion-col size="12" class="product-address">Ubicación</ion-col>
-        <ion-col size="12" class="product-name">{{product.country}}, {{product.state}}</ion-col>
-        <ion-col size="6">
-          <button v-if="follow" style="margin-top: 30px;" class="button-follower" color="primary" @click="setNotFollow">
-            Seguiendo
-          </button>
-          <button v-else style="margin-top: 30px;" class="button-follow" color="primary" @click="setFollow">
-            Seguir
-          </button>
+        <ion-col sizeLg="3" sizeMd="4" sizeXs="12">
+          
+          <ion-card>
+            <div style="text-align: center;">
+              <ion-spinner v-if="loading" name="circular"></ion-spinner>
+            </div> 
+            <ion-img v-if="!loading" :alt="store.name" :src="setUrl(store.image)" />
+            <ion-card-content>
+              <ion-list>
+                <ion-item-group>
+                
+                  <ion-item lines="none">
+                    <ion-label class="not-white-space">{{store?.name}}</ion-label>
+                  </ion-item>
+                </ion-item-group>
+              </ion-list>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col>
+          
+        </ion-col>
+        <ion-col sizeLg="8" sizeMd="7" sizeXs="12">
+          <ion-card>
+            <ion-row>
+              <ion-col sizeLg="4" sizeMd="6" sizeXs="12">
+                <ion-title><b>{{product?.name}}</b></ion-title>
+                
+                <ion-img :alt="product.name" :src="setUrl(product.image)" />
+              </ion-col>
+              <ion-col sizeLg="8" sizeMd="6" sizeXs="12">
+                <br/>
+             
+                <ion-item lines="none">
+                  <ion-label class="not-white-space">{{product?.description}}</ion-label>
+                </ion-item>
+                <br/>
+                <ion-item lines="none">
+                  <ion-label class="not-white-space">Precio: {{product?.price}} €</ion-label>
+                </ion-item>
+                <ion-button style="margin-left: 16px;" color="primary" @click="postStore()">
+                  Comprar
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-card>
+        </ion-col>
+        
+        <ion-col>
+
         </ion-col>
       </ion-row>
-		</template>
+    </template>
     <template #default-view-footer>
       <MenuTabs></MenuTabs>
     </template>
@@ -53,6 +82,7 @@ import {
 } from 'ionicons/icons';
 import { useUserStore } from '@/plugins/store'
 import axios from 'axios'
+import { setUrl } from '@/plugins/utils/img-src' 
 
 export default defineComponent({
   name: 'App',
@@ -71,11 +101,13 @@ export default defineComponent({
   },
   data() {
     return {
+      setUrl,
       baseURL: axios.defaults.baseURL,
       product: null,
-      store: {name : "Cargando"},
+      store: {name : "Cargando" , image : ''},
       follow : 0,
-      user: null
+      user: null,
+      loading : true
     }
   },
   created(){
@@ -85,13 +117,38 @@ export default defineComponent({
     this.checkFollow()
     this.getStore()
   },
+  mounted(){
+    this.hideHeader()
+  },
+  beforeRouteEnter(to, from,next) {
+    next(vm => {
+    });
+    this.hideHeader();
+  },
+  beforeRouteLeave(to, from) {
+    this.showHeader();
+  },
   methods:{
+    hideHeader(){
+      const elements = document.querySelectorAll('.header-default-view-title')
+      elements.forEach(element => {
+        element.style.display = 'none';
+      })
+    },
+    showHeader(){
+      const elements = document.querySelectorAll('.header-default-view-title')
+      elements.forEach(element => {
+        element.style.display = 'block';
+      })
+    },
     getStore(){
       axios.get('/api/stores/'+this.product.store_id)
       .then(res => {
         this.store = res.data.data
       }).catch(error => {
         console.log(error)
+      }).finally(()=>{
+        this.loading = false
       })
     },
     setFollow(){
@@ -139,8 +196,8 @@ export default defineComponent({
     font-weight: 600;
   }
 
-  .img-details{
-    border-radius: 10px; height: 200px;width: 265px;
+  ion-img{
+    border-radius: 10px; 
   }
 
   .button-follow{
@@ -183,5 +240,10 @@ export default defineComponent({
 
   .product-address{
     color: #2dd36f;font-weight: 600;font-size: 20px;
+  }
+
+  ion-spinner {
+    width: 100px;
+    height: 100px;
   }
 </style>

@@ -13,28 +13,35 @@
 
     <template #default-view-body>
       <div class="padding-page">
-        <ion-row style="font-size: 18px;" @click="$router.push('/profile/myproducts')">
-          <ion-icon :icon="pricetagsOutline" size="large"></ion-icon>
-          &nbsp;&nbsp;
-          Mis Productos
-        </ion-row>
-        <ion-row style="font-size: 18px;margin-top: 14px;" @click="$router.push('profile/mystores')">
-          <ion-icon :icon="storefrontOutline" size="large"></ion-icon>
-          &nbsp;&nbsp;
-          Mis Tiendas
-        </ion-row>
-        <ion-row style="font-size: 18px;margin-top: 14px;" @click="$router.push('profile/edit')">
+        <ion-row class="row-profile" @click="$router.push('profile/edit')">
           <ion-icon :icon="personOutline" size="large"></ion-icon>
           &nbsp;&nbsp;
           Editar Perfil
         </ion-row>
-        <ion-row style="font-size: 18px;margin-top: 14px;" @click="logout">
+        <ion-row  class="row-profile" @click="$router.push('profile/mystores')">
+          <ion-icon :icon="storefrontOutline" size="large"></ion-icon>
+          &nbsp;&nbsp;
+          Mis Tiendas
+        </ion-row>
+        <ion-row  class="row-profile" @click="$router.push('profile/myproducts')">
+          <ion-icon :icon="pricetagsOutline" size="large"></ion-icon>
+          &nbsp;&nbsp;
+          Mis Productos
+        </ion-row>
+        <ion-row  class="row-profile" @click="logout">
           <ion-icon :icon="exitOutline" size="large"></ion-icon>
           &nbsp;&nbsp;
           Cerra Sesión
         </ion-row>
       </div>
 		</template>
+    <template #default-view-footer>
+      <ion-footer>
+			  <ion-toolbar>
+				  <MenuTabs/>
+			  </ion-toolbar>
+		  </ion-footer>
+    </template>
   </base-view>
 </template>
 
@@ -113,3 +120,9 @@ export default defineComponent({
 });
 
 </script>
+
+<style>
+.row-profile{
+  font-size: 18px;margin-top: 14px;
+}
+</style>

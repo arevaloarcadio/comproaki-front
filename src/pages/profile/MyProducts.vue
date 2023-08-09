@@ -7,13 +7,13 @@
 		</template>
 
     <template #default-view-body>
-       
       <Card 
         v-if="loading" 
-        :data="products" 
+        :data="products.data" 
         :touch="true"
         :label="label"
         @touchData="touch($event)"
+        @click="clickProduct($event)"
       ></Card>
       
       <ion-fab v-if="!fabActivated" slot="fixed" vertical="bottom" horizontal="end">
@@ -37,7 +37,14 @@
           </ion-fab-button>
         </ion-fab-list>
       </ion-fab>
-
+    </template>
+   
+    <template #default-view-footer>
+      <ion-footer>
+			  <ion-toolbar>
+				  <MenuTabs/>
+			  </ion-toolbar>
+		  </ion-footer>
     </template>
   </base-view>
 </template>
@@ -47,7 +54,7 @@
 import { 
   defineComponent 
 } from 'vue';
-import Card from '@/components/CardComponent.vue'
+import Card from '@/components/CardProduct.vue'
 import axios from 'axios'
 import { 
   pencilOutline,
@@ -76,8 +83,16 @@ export default defineComponent({
       addOutline
     }
   },
-  updated(){
+  mounted(){
     this.getProducts()
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+    });
+    this.getProducts()
+  },
+  beforeRouteLeave(){
+    this.fabActivated = false
   },
   methods:{
     edit(){
@@ -89,13 +104,14 @@ export default defineComponent({
       })
     },
     getProducts(){
-      axios.get('/api/products')
+      axios.get('/api/products/byUser')
       .then(res => {
         this.products = res.data.data
       }).catch(error => {
         console.log(error)
       }).finally(()=>{
         this.loading = true
+        console.log(this.fabActivated)
       })
     },
     touch(ev){
@@ -114,6 +130,21 @@ export default defineComponent({
         btn.classList.add("data-selected");
         self.fabActivated = true
       }, 500);
+    },
+    clickProduct(ev){
+      const key = ev.target.id.split('-')[1]
+      const btn = document.querySelector('#'+this.label+'-'+key)
+      const self = this
+      
+      const btns = document.querySelectorAll(".touchstart");
+      
+      btns.forEach((btn) => {
+        btn.classList.remove("data-selected");
+      })
+      console.log(self.products.data[key])
+      self.productSelected = self.products.data[key]
+      btn.classList.add("data-selected");
+      self.fabActivated = true
     }
   }
 });
@@ -121,10 +152,6 @@ export default defineComponent({
 </script>
 
 <style>
-  .store-selected {
-    background-color: #bfcbc3;    
-  }
-
   ion-card-subtitle{
     font-weight: 600;
   }

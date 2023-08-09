@@ -42,9 +42,20 @@
                   <ion-button class="pt-1" router-link="/pages/register">
                     Registro
                   </ion-button>
+                  <br><br>
+                  <ion-label>
+                    <b>
+                      o
+                    </b>
+                  </ion-label>
+                  <div style="justify-content: center;display: flex;">
+                    <img src="/icon/icon-facebook.png" @click="loginFacebook" >
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <img src="/icon/icon-google.png" @click="loginGoogle">
+                  </div>
                 </div>
                 </ion-col>
-              <ion-col  sizeLg="4" sizeMd="4" sizeXs="12"></ion-col>
+              <ion-col sizeLg="4" sizeMd="4" sizeXs="12"></ion-col>
             </ion-row>
           </div>
         </div>
@@ -52,12 +63,14 @@
   </base-view-page>
 </template>
 
-<script>
+<script lang="ts">
 
 import { IonButton,IonCol,IonRow } from "@ionic/vue";
 import toast from '@/plugins/toast'
 import { useUserStore } from '@/plugins/store';
 import jwtToken from '@/plugins/jwt/jwt-token'
+import { FacebookLogin } from '@capacitor-community/facebook-login';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 
 export default {
   name: "login-",
@@ -76,11 +89,84 @@ export default {
       password : ''
     };
   },
-  mounted(){
-  
+  created(){
+   this.initFacebook()
+   this.initGoogle()
   },
   methods: {
-   
+    async initFacebook(){
+      await FacebookLogin.initialize({ appId: '687712269149585' });
+    },
+    async initGoogle(){
+      await GoogleAuth.initialize();
+    },
+    async loginFacebook(){
+      
+      const FACEBOOK_PERMISSIONS = [
+        'email',
+        'user_birthday',
+        'user_photos',
+        'user_gender',
+      ];
+      
+      const result = await ((
+        FacebookLogin.login({ permissions: FACEBOOK_PERMISSIONS })
+      ));
+
+      if (result.accessToken) {
+        // Login successful.
+        var loading = await toast.showLoading()
+
+        loading.present();
+
+        const profile = await FacebookLogin.getProfile<{
+          email: string;
+          name: string;
+          picture: object;
+        }>({ fields: ['email','name','picture','id'] });
+        
+        this.userStore.signUpProvider(profile.name,profile.email,profile.picture.data.url,'facebook')
+        .then((res:any) => {
+          loading.dismiss()
+          console.log(res)
+          jwtToken.setToken(res.data.access_token);
+          this.$router.push('/dashboard')
+        }).catch((error:any) => {
+          loading.dismiss()
+          if (error.response.status == 400) {
+            toast.openToast("Creendenciales Invalidas","error",10000);
+          }
+          console.log(error)
+        })
+      
+      }
+    },
+    async loginGoogle(){
+      const result = await GoogleAuth.signIn();
+      
+      console.log(result);
+      
+      if(result.authentication.accessToken){
+        var loading = await toast.showLoading()
+
+        loading.present();
+
+        this.userStore.signUpProvider(result.name,result.email,result.imageUrl,'google')
+        .then((res:any) => {
+          loading.dismiss()
+          console.log(res)
+          jwtToken.setToken(res.data.access_token);
+          this.$router.push('/dashboard')
+        }).catch((error:any) => {
+          loading.dismiss()
+          if (error.response.status == 400) {
+            toast.openToast("Creendenciales Invalidas","error",10000);
+          }
+          console.log(error)
+        })
+      }
+      
+    },
     async login(){
 
       var loading = await toast.showLoading()
@@ -88,7 +174,7 @@ export default {
       loading.present();
 
       this.userStore.signIn(this.email, this.password)
-      .then(res => {
+      .then((res:any) => {
         loading.dismiss()
         console.log(res)
         jwtToken.setToken(res.data.access_token);
@@ -101,7 +187,7 @@ export default {
        
         */
       
-      }).catch(error => {
+      }).catch((error:any) => {
         loading.dismiss()
         if (error.response.status == 400) {
           toast.openToast("Creendenciales Invalidas","error",10000);

@@ -8,24 +8,41 @@
 		</template>
  
     <template #default-view-body>
-      
-      
       <Card 
         v-if="loading" 
-        :data="stores" 
+        :data="stores.data" 
+        :tags="true"
         :touch="true"
         :label="label"
-        @touchData="touch($event)"
+        @touchData="touchStore($event)"
+        @click="clickStore($event)"
       ></Card>
-      
-      <ion-fab v-if="!fabActivated" slot="fixed" vertical="bottom" horizontal="end">
-        <ion-fab-button id="fab" @click="$router.push('/profile/store/add')">
+
+      <ion-fab 
+        v-if="!fabActivated && stores?.data?.length == 0" 
+        slot="fixed" 
+        vertical="bottom" 
+        horizontal="end"
+      >
+        <ion-fab-button 
+          id="fab" 
+          @click="$router.push('/profile/store/add')"
+        >
           <ion-icon :icon="addOutline"></ion-icon>
         </ion-fab-button>
       </ion-fab>
-      
-      <ion-fab v-if="fabActivated" slot="fixed" vertical="bottom" horizontal="end" :activated="true">
-        <ion-fab-button id="fab-edit" @click="fabActivated = false">
+        
+      <ion-fab 
+        v-if="fabActivated" 
+        slot="fixed" 
+        vertical="bottom" 
+        horizontal="end" 
+        :activated="true"
+      >
+        <ion-fab-button 
+          id="fab-edit" 
+          @click="fabActivated = false"
+        >
           <ion-icon :icon="addOutline"></ion-icon>
         </ion-fab-button>
         <ion-fab-list side="top">
@@ -39,9 +56,15 @@
           </ion-fab-button>
         </ion-fab-list>
       </ion-fab>
-
     </template>
-      
+    
+    <template #default-view-footer>
+      <ion-footer>
+			  <ion-toolbar>
+				  <MenuTabs/>
+			  </ion-toolbar>
+		  </ion-footer>
+    </template>
   </base-view>
 </template>
 
@@ -79,12 +102,20 @@ export default defineComponent({
       addOutline
     }
   },
-  updated(){
+  mounted(){
     this.getStores()
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+    })
+    this.getStores()
+  },
+  beforeRouteLeave(){
+    this.fabActivated = false
   },
   methods:{
     getStores(){
-      axios.get('/api/stores')
+      axios.get('/api/stores/byUser')
       .then(res => {
         this.stores = res.data.data
       }).catch(error => {
@@ -101,10 +132,7 @@ export default defineComponent({
         }
       })
     },
-    touch(ev){
-      
-      console.log(ev)
-      
+    touchStore(ev){
       const key = ev.event.target.id.split('-')[1]
       const btn = document.querySelector('#'+this.label+'-'+key)
       const self = this
@@ -116,10 +144,26 @@ export default defineComponent({
           btn.classList.remove("data-selected");
         })
         
-        self.storeSelected = self.stores[key]
+        self.storeSelected = self.stores.data[key]
         btn.classList.add("data-selected");
         self.fabActivated = true
       }, 500);
+    },
+    clickStore(ev){
+      const key = ev.target.id.split('-')[1]
+      const btn = document.querySelector('#'+this.label+'-'+key)
+      const self = this
+      
+      const btns = document.querySelectorAll(".touchstart");
+      
+      btns.forEach((btn) => {
+        btn.classList.remove("data-selected");
+      })
+      
+      self.storeSelected = self.stores.data[key]
+    
+      btn.classList.add("data-selected");
+      self.fabActivated = true
     }
   }
 });
@@ -127,7 +171,5 @@ export default defineComponent({
 </script>
 
 <style>
-  .store-selected {
-    background-color: #bfcbc3;    
-  }
+
 </style>

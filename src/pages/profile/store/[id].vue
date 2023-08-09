@@ -101,6 +101,13 @@
         </ion-row>
       </div>
     </template>
+    <template #default-view-footer>
+      <ion-footer>
+			  <ion-toolbar>
+				  <MenuTabs/>
+			  </ion-toolbar>
+		  </ion-footer>
+    </template>
   </base-view>
 </template>
 
@@ -123,6 +130,7 @@ import toast from '@/plugins/toast'
 import axios from 'axios'
 import countries from '@/data/countries.js'
 import data_states from '@/data/states.json'
+import { setUrl } from '@/plugins/utils/img-src' 
 
 export default defineComponent({
   name: 'App',
@@ -142,6 +150,7 @@ export default defineComponent({
   },
   data() {
     return {
+      setUrl,
       baseURL: axios.defaults.baseURL,
       countries,
       stores: [],
@@ -166,7 +175,7 @@ export default defineComponent({
     this.postal_code  = this.$route.query.postal_code 
     this.phone  = this.$route.query.phone 
     this.address  = this.$route.query.address 
-    document.querySelector('#image-store').src = this.baseURL+this.$route.query.image  
+    document.querySelector('#image-store').src = this.setUrl(this.$route.query.image)  
     this.getStates()
     this.state = this.$route.query.state  
   },

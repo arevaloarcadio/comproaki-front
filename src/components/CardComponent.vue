@@ -10,7 +10,7 @@
           :id="'img-'+key"
           :alt="dat.name" 
           style="height: 200px;width: auto;" 
-          :src="baseURL+dat.image" 
+          :src="setUrl(dat.image)" 
         />
         <ion-card-header 
           :id="'header-'+key"
@@ -31,6 +31,15 @@
         <ion-card-content 
           :id="'content-'+key"
         >
+        <div v-if="tags" id="container-items-tag">
+          <ion-row id="ion-row-items-tag">
+            <div v-for="(tag,key) in dat.tags" :key="tag" class="row-tags">
+              <div class="item-store-tag">
+                {{tag.name}}
+              </div>
+            </div>
+          </ion-row>
+        </div>
         </ion-card-content>
       </ion-card>
     </ion-col>
@@ -53,6 +62,7 @@ import {
 } from '@ionic/vue'
 
 import axios from 'axios'
+import { setUrl } from '@/plugins/utils/img-src' 
 
 export default {
   name: 'Card',
@@ -60,6 +70,10 @@ export default {
     data: Array,
     label: String,
     touch:{
+      type: Boolean,
+      default: false
+    },
+    tags:{
       type: Boolean,
       default: false
     },
@@ -79,6 +93,7 @@ export default {
     return {
       baseURL: axios.defaults.baseURL,
       dataSelected: null,
+      setUrl,
     }
   },
   mounted(){
@@ -95,8 +110,3 @@ export default {
   }
 };
 </script>
-<style>
-  .data-selected {
-    background-color: #bfcbc3;    
-  }
-</style>
