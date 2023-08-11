@@ -85,7 +85,11 @@ http://ionicframework.com/docs/theming/ */
 
 @media (prefers-color-scheme: dark) {
 
-  .label-input{
+  .item-results:hover {
+    --background: #363636;
+  }
+
+.label-input{
   color: var( --ion-color-primary);
   font-size: 12px;
   letter-spacing: 0.4px;
@@ -101,6 +105,31 @@ http://ionicframework.com/docs/theming/ */
   font-size: 16px;
   font-weight : 600;
 }
+
+.input-text-box-search {
+  background-color:  #363636;
+  font-family: Poppins;
+  letter-spacing: 0.4px;
+  border: 0px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 12px 50px;
+  transition: background-color 0.3s ease-in-out 0s;
+  width: 100%;
+  font-weight: 300;
+  font-size: 16px;
+  color: var( --ion-color-primary);
+}
+
+.container-box-search{
+  background-color: #363636;
+  padding-top: 8px;
+  position: relative;
+  border-radius: 8px;
+}
+
+
   /*
    * Dark Colors
    * -------------------------------------------
@@ -273,6 +302,50 @@ body:focus{ outline: none; }
 }
 
 @media (prefers-color-scheme: light ) {
+  .item-results:hover {
+    --background: #f4f5f8;
+  }
+  
+  .container-box-search{
+    background-color: #e1e1e1;
+    padding-top: 8px;
+    position: relative;
+    border-radius: 8px;
+  }
+
+  .input-text-box-search{
+    background-color: #e1e1e1;
+    font-family: Poppins;
+    letter-spacing: 0.4px;
+    border: 0px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    margin: 0px;
+    padding: 12px 50px;
+    transition: background-color 0.3s ease-in-out 0s;
+    width: 100%;
+    font-weight: 300;
+    font-size: 16px;
+    color: #5B716F;
+  }
+
+  .label-input-box-search{
+    color: var( --ion-color-primary);
+    font-family: Poppins;
+    font-size: 12px;
+    letter-spacing: 0.4px;
+    line-height: 20px;
+    left: 27px;
+    position: absolute;
+    top: 0px;
+    margin: 0px;
+    padding: 0px 8px;
+    z-index: 1;
+    background-color: aliceblue;
+    transition: color 0.3s ease-in-out 0s;
+    font-size: 16px;
+  }
+  
   .label-input{
     color: var( --ion-color-primary);
     font-size: 12px;
@@ -327,6 +400,26 @@ body:focus{ outline: none; }
   color: var( --ion-color-primary);
 }
 
+.input-multiselect{
+  background-color: transparent;
+  font-size: 14px;
+  letter-spacing: 0.4px;
+  line-height: 3px;
+  border: 0px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 12px 14px;
+  transition: background-color 0.3s ease-in-out 0s;
+  width: 100%;
+  height : auto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 20px;
+  color: var( --ion-color-primary);
+}
+
 .input-textarea{
   background-color: transparent;
   font-size: 14px;
@@ -347,45 +440,10 @@ body:focus{ outline: none; }
   color: var( --ion-color-primary) !important;
 }
 
-.label-input-box-search{
-  color: var( --ion-color-primary);
-  font-family: Poppins;
-  font-size: 12px;
-  letter-spacing: 0.4px;
-  line-height: 20px;
-  left: 27px;
-  position: absolute;
-  top: 0px;
-  margin: 0px;
-  padding: 0px 8px;
-  z-index: 1;
-  background-color: aliceblue;
-  transition: color 0.3s ease-in-out 0s;
-  font-size: 16px;
-}
 
-.container-box-search{
-  background-color: #F3F3F3;
-  padding-top: 8px;
-  position: relative;
-  border-radius: 8px;
-}
 
-.input-text-box-search{
-  background-color: transparent;
-  font-family: Poppins;
-  letter-spacing: 0.4px;
-  border: 0px;
-  border-radius: 8px;
-  box-sizing: border-box;
-  margin: 0px;
-  padding: 12px 50px;
-  transition: background-color 0.3s ease-in-out 0s;
-  width: 100%;
-  font-weight: 300;
-  font-size: 16px;
-  color: #5B716F;
-}
+
+
 
 .input-container-box-search{
   font-family: Poppins;

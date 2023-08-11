@@ -7,7 +7,7 @@
           
           <ion-card>
             <div style="text-align: center;">
-              <ion-spinner v-if="loading" name="circular"></ion-spinner>
+              <ion-spinner v-if="loading" class="product-spinner" name="circular"></ion-spinner>
             </div> 
             <ion-img v-if="!loading" :alt="store.name" :src="setUrl(store.image)" />
             <ion-card-content>
@@ -242,7 +242,7 @@ export default defineComponent({
     color: #2dd36f;font-weight: 600;font-size: 20px;
   }
 
-  ion-spinner {
+  .product-spinner {
     width: 100px;
     height: 100px;
   }

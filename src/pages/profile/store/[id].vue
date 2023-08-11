@@ -29,20 +29,6 @@
                 </div>
               </ion-col>  
               <br>
-              <!--
-              <ion-col  sizeXs="12">
-                <div class="container">
-                  <label class="label-input">Pais</label>
-                  <div class="input-container">
-                    <ion-select interface="action-sheet" v-model="country" @ionChange="getStates" class="input-text">
-                      <ion-select-option v-for="country in countries" :key="country">
-                        {{country.country}}
-                      </ion-select-option>
-                    </ion-select>
-                  </div>
-                </div>
-              </ion-col>
-              -->
               <ion-col  sizeXs="12">
                 <div class="container">
                   <label class="label-input">Estado o Provincia</label>
@@ -79,6 +65,42 @@
                   </div>
                 </div>
               </ion-col>
+              
+              <ion-col sizeXs="12">
+                <div class="container">
+                  <label class="label-input">Etiquetas</label>
+                  <div class="input-container">
+                    <template v-if="selected_tags.length == 0">
+                      <input 
+                        type="text" 
+                        @click="selectTags" 
+                        class="input-text" 
+                        id="input-text-tags"
+                        readonly
+                      >
+                      <i>
+                        <ion-icon :icon="caretDownOutline" class="tag-icon"></ion-icon>
+                      </i>
+                    </template>
+                    <div v-else id="container-items-tag" class="input-multiselect" @click="selectTags">
+                      <ion-row id="ion-row-items-tag">
+                        <div v-for="(tag,key) in selected_tags" :key="tag" id="container-row-items-tag" class="row-tags">
+                          <div :id="'item-tags-'+key" class="item-tag">
+                            {{tag.name}}
+                            <ion-icon 
+                              :id="'icon-'+key"
+                              @click="removeTag(key)"
+                              :icon="closeOutline" 
+                              style="position:absolute;margin-top: 1px;"
+                            ></ion-icon>
+                          </div>
+                        </div>
+                      </ion-row>
+                    </div>
+                  </div>
+                </div>
+              </ion-col>
+
               <ion-col  sizeXs="12">
                 <div class="container">
                   <label class="label-input">Dirección</label>
@@ -100,7 +122,21 @@
           <ion-col  sizeLg="4" sizeMd="4" sizeXs="12"></ion-col>
         </ion-row>
       </div>
+
+      <ion-popover
+        :is-open="is_open_popover_tag"
+        :event="event_tag_popover"
+        trigger-action="click"
+        @didDismiss="is_open_popover_tag = false"
+      >
+        <PopoverSelect 
+          :options="tags"
+          :options_selected="selected_tags" 
+          @clickData="getTagsSelected"
+        ></PopoverSelect>
+      </ion-popover>
     </template>
+    
     <template #default-view-footer>
       <ion-footer>
 			  <ion-toolbar>
@@ -118,23 +154,32 @@ import {
   defineComponent 
 } from 'vue';
 
-import { IonAvatar,IonSelectOption, IonSelect, IonTextarea } from '@ionic/vue';
+import { 
+  IonAvatar,
+  IonSelectOption, 
+  IonSelect, 
+  IonTextarea,
+  popoverController 
+} from '@ionic/vue';
 
 import { 
   pricetagsOutline,
   storefrontOutline,
   add,
-  arrowBackOutline 
+  arrowBackOutline,
+  closeOutline 
 } from 'ionicons/icons';
 import toast from '@/plugins/toast'
 import axios from 'axios'
 import countries from '@/data/countries.js'
 import data_states from '@/data/states.json'
 import { setUrl } from '@/plugins/utils/img-src' 
+import PopoverSelect from '@/components/PopoverMultiSelect.vue'
 
 export default defineComponent({
   name: 'App',
   components: {
+    PopoverSelect,
     IonAvatar, 
     IonSelectOption,
     IonSelect,
@@ -145,7 +190,8 @@ export default defineComponent({
       storefrontOutline,
       pricetagsOutline,
       add,
-      arrowBackOutline
+      arrowBackOutline,
+      closeOutline
     }
   },
   data() {
@@ -155,6 +201,10 @@ export default defineComponent({
       countries,
       stores: [],
       states: [],
+      tags: [],
+      selected_tags: [],
+      event_tag_popover: null,
+      is_open_popover_tag: false,
       country: 'España',
       id: null,
       name: null,
@@ -176,6 +226,8 @@ export default defineComponent({
     this.phone  = this.$route.query.phone 
     this.address  = this.$route.query.address 
     document.querySelector('#image-store').src = this.setUrl(this.$route.query.image)  
+    this.getTagsByStore()
+    this.getTags()
     this.getStates()
     this.state = this.$route.query.state  
   },
@@ -195,6 +247,10 @@ export default defineComponent({
       formData.append("address",this.address)
       formData.append("image",this.image)
 
+      this.selected_tags.forEach(selected_tag => {
+        formData.append("tags[]",selected_tag.id)
+      });
+      
       axios.post('/api/stores/'+this.id,formData)
       .then(res => {
         toast.openToast("Tienda modificado exitosamente","success",2000)
@@ -206,11 +262,45 @@ export default defineComponent({
         console.log(error)
       })
     },
+    getTags(){
+      axios.get('/api/tags/all')
+      .then(res => {
+        this.tags = res.data.data
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    getTagsByStore(){
+      axios.get('/api/tags/byStore/'+this.id)
+      .then(res => {
+        this.selected_tags = res.data.data
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     getStates(){
       var country = data_states.data.find(country => {
         return country.name == this.country
       })
       this.states = country.states
+    },
+    removeTag(key){
+      this.selected_tags.splice(key, 1);
+    },
+    selectTags(Event){
+      
+      if(Event.target.id.includes("icon")){
+        return
+      }
+
+      this.is_open_popover_tag = true
+      this.event_tag_popover = Event
+    },
+    getTagsSelected(tag){
+      let validate = this.selected_tags.find(selected_tag => selected_tag.id == tag.id)
+      
+      if(validate === undefined)
+        this.selected_tags.push(tag)
     },
     file(){
       document.querySelector('#file-input').click()

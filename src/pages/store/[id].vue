@@ -4,6 +4,7 @@
     <template #slot-view-title>
       <ion-header  id="main-content">
         <ion-toolbar>
+          
           <ion-buttons slot="start">
             <ion-button @click="$router.go(-1)">
               <ion-icon :icon="arrowBackOutline"></ion-icon>
@@ -13,22 +14,24 @@
           <ion-title>
             <div class="hearder-app">
               {{store.name}}
-              
             </div>
           </ion-title>
+          
           <ion-buttons slot="end">
             <button v-if="follow" class="button-follower" color="primary" @click="setNotFollow">
-            Seguiendo
-          </button>
-          <button v-else class="button-follow" color="primary" @click="setFollow">
-            Seguir
-          </button>
+              Seguiendo
+            </button>
+            <button v-else class="button-follow" color="primary" @click="setFollow">
+              Seguir
+            </button>
           </ion-buttons>
+          
           <ion-buttons slot="end">
             <ion-menu-toggle>
               <ion-icon :icon="menuOutline" size="large"></ion-icon>
             </ion-menu-toggle>
           </ion-buttons>
+       
         </ion-toolbar>
 		  </ion-header>
     </template>
@@ -40,6 +43,7 @@
         <ion-menu type="push" content-id="main-content" side="end" style="z-index: 22;">
           <ion-header>
             <ion-img
+              style="height: 210px;"
               :src="setUrl(store.image)"
               :alt="'Logo de '+ store.name"
             />
@@ -102,7 +106,7 @@
             </ion-list>
           </ion-content>
         </ion-menu>
-   
+        <LoadingCard v-if="!loading"/>
         <CardDashboard v-if="loading" :data="products.data" @clickData="getKeyStore($event)"></CardDashboard>
    
       </ion-content>

@@ -13,19 +13,28 @@
                   size="large"
                 ></ion-icon>
               </i>
-              <input type="text"  placeholder="Buscar" class="input-text-box-search">
+              <input 
+                type="text" 
+                @keyup.enter="searchProduct($event.target.value)" 
+                v-model="search_product" 
+                id="search_product" 
+                placeholder="Buscar" 
+                class="input-text-box-search"
+              >
             </div>
           </div>
+          <ListAutoComplete 
+            v-if="search_product != '' && show_list" 
+            :data="filter_product" 
+            @clickData="searchProduct($event)"
+          />
         </ion-col>
-        <!--<ion-col size="2">  
-          <div style="display: flex;justify-content: center;">
-            <ion-icon @click="$router.push('/profile')" style="margin-top: 22px;" :icon="storefrontOutline" size="large"></ion-icon>
-          </div>
-        </ion-col>-->
       </ion-row>
+      <LoadingBar v-if="loading_bar && search_product != ''"/>
 		</template>
 
     <template #default-view-body>
+      <LoadingCard v-if="!loading"/>
       <CardDashboard v-if="loading" :data="products.data" @clickData="getKeyStore($event)"></CardDashboard>
     </template>
 
@@ -53,10 +62,12 @@ import {
 import { storefrontOutline, search } from 'ionicons/icons';
 import axios from 'axios'
 import CardDashboard from '@/components/CardProduct.vue'
+import ListAutoComplete from '@/components/ListAutoComplete.vue'
 
 export default {
   name: 'Dashboard',
   components : {
+    ListAutoComplete,
     CardDashboard,
     IonContent,
     IonHeader,
@@ -67,9 +78,14 @@ export default {
   },
   data(){
     return{
-      products: [],
       baseURL: axios.defaults.baseURL,
-      loading: false
+      products: [],
+      loading: false,
+      loading_bar: false,
+      show_list: false,
+      awaiting_search: false,
+      search_product: '',
+      filter_product : []
     }
   },
   mounted(){
@@ -94,12 +110,68 @@ export default {
       search
     }
   },
+  watch: {
+    search_product: function () {
+      if (!this.awaiting_search) {
+        setTimeout(() => {
+          this.searchListProduct()
+          this.show_list = true
+          this.awaiting_search = false;
+        }, 1000); // 1 sec delay
+      }
+      this.awaiting_search = true;
+    },
+  },
   methods :{
     getMessage(id){
       return this.messages.find(m => m.id === id);
     },
+    searchListProduct(){
+      this.loading_bar = true;
+      
+      if(this.search_product == ''){
+        this.getProductStoreUsers();
+        return
+      }
+      
+      axios.post('/api/products/filter?all=true',{
+        search : this.search_product
+      })
+      .then(res => {
+        this.filter_product = res.data.data
+      }).catch(error => {
+        console.log(error)
+      }).finally(()=>{
+        this.loading_bar = false;
+        this.loading = true
+      })
+    },
+    searchProduct(search){
+
+      this.loading_bar = true;
+      document.querySelector('#search_product').value = search
+      this.show_list = false
+      this.filter_product = []
+     
+      axios.post('/api/products/filter',{
+        search: search
+      })
+      .then(res => {
+        this.products = res.data.data
+      }).catch(error => {
+        console.log(error)
+      }).finally(()=>{
+        this.loading_bar = false;
+        this.loading = true
+      })
+    },
     getKeyStore(store){
-      this.$router.push({path : '/store/'+store.id, query : {...store}})
+      this.$router.push({
+        path : '/product/'+store.id, 
+        query : {
+          ...store
+        }
+      })
     },
     getStores(){
       axios.get('/api/stores/byUser')
@@ -112,6 +184,7 @@ export default {
       })
     },
     getProductStoreUsers(){
+      this.loading = false
       axios.get('/api/products/byStoreUser')
       .then(res => {
         this.products = res.data.data

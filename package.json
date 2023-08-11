@@ -1,5 +1,5 @@
 {
-    "name": "vue-ionic-template",
+    "name": "comproaki-app",
     "version": "1.1.0",
     "description": "A production ready starter template for projects with ionic-vue with linting, formatter etc pre-configured.",
     "main": "./src/main.ts",

@@ -87,7 +87,7 @@
                         <ion-icon :icon="caretDownOutline" class="tag-icon"></ion-icon>
                       </i>
                     </template>
-                    <div v-else id="container-items-tag" class="input-text" @click="selectTags">
+                    <div v-else id="container-items-tag" class="input-multiselect" @click="selectTags">
                       <ion-row id="ion-row-items-tag">
                         <div v-for="(tag,key) in selected_tags" :key="tag" id="container-row-items-tag" class="row-tags">
                           <div :id="'item-tags-'+key" class="item-tag">

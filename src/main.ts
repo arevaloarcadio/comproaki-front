@@ -16,6 +16,8 @@ import BaseView from './core/BaseView.vue';
 import BaseViewPage from './core/BaseViewPage.vue';
 import piniaPersist from 'pinia-plugin-persist'
 import MenuTabs from './components/MenuTabs.vue'
+import LoadingCard from './components/LoadingCard.vue'
+import LoadingBar from './components/LoadingBar.vue'
 
 const pinia = createPinia()
 pinia.use(piniaPersist)
@@ -27,6 +29,8 @@ const app = createApp(App)
 
 app.component('BaseView', BaseView);
 app.component('BaseViewPage', BaseViewPage);
+app.component('LoadingCard', LoadingCard);
+app.component('LoadingBar', LoadingBar);
 app.component('MenuTabs', MenuTabs);
 
 router.isReady().then(() => {
