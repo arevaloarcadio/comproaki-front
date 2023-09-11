@@ -46,6 +46,20 @@
                   </div>
                 </div>
               </ion-col>
+              
+              <ion-col  sizeXs="12">
+                <div class="container">
+                  <label class="label-input">Tipo de Tienda</label>
+                  <div class="input-container">
+                    <ion-select interface="action-sheet" v-model="type" class="input-text">
+                      <ion-select-option v-for="type in types" :key="type" :value="type">
+                        {{type}}
+                      </ion-select-option>
+                    </ion-select>
+                  </div>
+                </div>
+              </ion-col>
+
               <ion-col  sizeXs="12">
                 <div class="container">
                   <label class="label-input">Ciudad</label>
@@ -171,7 +185,8 @@ import {
   IonSelectOption,
   IonSelect,
   IonTextarea,
-  popoverController
+  popoverController,
+  IonPopover
 } from '@ionic/vue';
 
 import { 
@@ -190,7 +205,8 @@ export default defineComponent({
     IonSelectOption,
     IonSelect,
     IonTextarea,
-    PopoverSelect
+    PopoverSelect,
+    IonPopover
   },
   setup(){ 
     return{
@@ -209,6 +225,7 @@ export default defineComponent({
       stores: [],
       states: [],
       tags: [],
+      types: ['Restaurant','Tienda'],
       selected_tags: [],
       event_tag_popover: null,
       is_open_popover_tag: false,
@@ -216,6 +233,7 @@ export default defineComponent({
       name: null,
       state: null,
       city: null,
+      type: null,
       postal_code: null,
       phone: null,
       address: null,
@@ -237,6 +255,7 @@ export default defineComponent({
       formData.append("name",this.name)
       formData.append("state",this.state)
       formData.append("city",this.city)
+      formData.append("type",this.type)
       formData.append("postal_code",this.postal_code)
       formData.append("phone",this.phone)
       formData.append("address",this.address)

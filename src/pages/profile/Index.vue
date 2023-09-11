@@ -18,6 +18,11 @@
           &nbsp;&nbsp;
           Editar Perfil
         </ion-row>
+        <ion-row  class="row-profile" @click="$router.push('profile/mycategories')">
+          <ion-icon :icon="ticketOutline" size="large"></ion-icon>
+          &nbsp;&nbsp;
+          Mis Categorias
+        </ion-row>
         <ion-row  class="row-profile" @click="$router.push('profile/mystores')">
           <ion-icon :icon="storefrontOutline" size="large"></ion-icon>
           &nbsp;&nbsp;
@@ -61,7 +66,8 @@ import {
   storefrontOutline,
   arrowBackOutline,
   personOutline,
-  exitOutline
+  exitOutline,
+  ticketOutline
 } from 'ionicons/icons';
 import { useUserStore } from '@/plugins/store';
 import toast from '@/plugins/toast'
@@ -89,6 +95,7 @@ export default defineComponent({
       arrowBackOutline,
       personOutline,
       exitOutline,
+      ticketOutline,
       userStore,
       ionRouter,
     }

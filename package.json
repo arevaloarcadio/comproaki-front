@@ -43,7 +43,7 @@
         "vuex": "^4.1.0",
         "vuex-persistedstate": "^4.1.0"
     },
-    "devDependencies": {
+      "devDependencies": {
         "@capacitor/cli": "4.3.0",
         "@commitlint/cli": "^17.1.2",
         "@commitlint/config-conventional": "^17.1.0",

@@ -21,6 +21,8 @@ import { menuOutline } from 'ionicons/icons'
 		<ion-content class="ion-padding">
 			<slot name="default-view-body"></slot>
 		</ion-content>
+
 		<slot name="default-view-footer"></slot>
+	
 	</ion-page>
 </template>

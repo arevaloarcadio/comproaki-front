@@ -18,8 +18,14 @@
               {{option.name}}
             </ion-label>
           </ion-col> 
-          <ion-col size="2" >
-            <ion-icon :icon="checkmarkOutline" class="icon-color-primary"></ion-icon>
+          <ion-col 
+            v-if="option_selected.id === option.id" 
+            size="2" 
+          >
+            <ion-icon 
+              :icon="checkmarkOutline" 
+              class="icon-color-primary"
+            ></ion-icon>
           </ion-col>
         </ion-row>
       </div>
@@ -43,7 +49,7 @@ import { checkmarkOutline } from 'ionicons/icons';
 
 export default defineComponent({
   name: 'Popover',
-  props : ['options'],
+  props : ['options','option_selected'],
   setup(){
     return{
       checkmarkOutline

@@ -1,58 +1,38 @@
 <template>
-  <ion-row>
-    <ion-col v-for="(dat,key) in data" :key="dat" sizeLg="3" sizeMd="4" sizeXs="6">
-      <ion-card 
-        class="touchstart" 
-        :id="label+'-'+key" 
-        @touchstart="touch($event,dat)"
-        @click="$emit('clickData',dat)"
-      >
-        <ion-img 
-          :id="'img-'+key"
-          :alt="dat.name" 
-          style="height:200px;width: auto;" 
-          :src="setUrl(dat.image)" 
-        />
-        <ion-card-header 
-          :id="'header-'+key"
-        >
-          <ion-card-title 
-            :id="'title-'+key"
-          >
-            <b>
-              {{dat.name}}
-            </b>
-          </ion-card-title>
-          <ion-card-subtitle 
-            :id="'subtitle-'+key"
-          >
-            {{dat?.store?.name}}
-          </ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content 
-          :id="'content-'+key"
-        >
-        <ion-card-title 
-          :id="'title-'+key"
-        >
-            <b>
-              {{dat.price}} €
-            </b>
-        </ion-card-title>
-        <!--<div v-if="tags" id="container-items-tag">
-          <ion-row id="ion-row-items-tag">
-            <div v-for="(tag,key) in dat.tags" :key="tag" class="row-tags">
-              <div class="item-store-tag">
-                {{tag.name}}
-              </div>
-            </div>
-          </ion-row>
-        </div>-->
-        </ion-card-content>
-      </ion-card>
-    </ion-col>
-  </ion-row>
-  
+  <div 
+    class="card touchstart"
+  >
+    <div 
+      class="img"  
+      :style="{ 
+        backgroundImage: 'url('+setUrl(image)+')',
+        backgroundSize: 'cover',
+        position: 'relative',
+        backgroundPosition: 'center',
+        height : heightImg
+      }"
+    >
+      <div v-if="icon" class="save">
+        <ion-icon :icon="bookmarkOutline"></ion-icon>
+      </div>
+    </div>
+
+    <div class="text-product">
+      <p class="price-product">{{price}} €</p>
+      <p class="title-product">{{title}}</p> 
+
+      <div v-if="cart" class="icon-box">
+        <p class="span">
+          <button class="CartBtn">
+          <span class="IconContainer"> 
+            <ion-icon style="height: 20px;width: 20px;" :icon="cartIcon" class="cart"></ion-icon>
+          </span>
+          <p class="text-cart">Agregar al Carrito</p>
+        </button>
+        </p>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -68,19 +48,23 @@ import {
   IonCardSubtitle, 
   IonCardTitle
 } from '@ionic/vue'
-
+import { bookmarkOutline } from 'ionicons/icons';
 import axios from 'axios'
 import { setUrl } from '@/plugins/utils/img-src'
 
 export default {
   name: 'Card',
   props: {
-    data: Array,
+    title: String,
+    price: String,
     label: String,
-    touch:{
-      type: Boolean,
-      default: false
-    },
+    image:String,
+    data: Array,
+    cart: Boolean,
+    icon: Boolean,
+    heightImg : {
+      default : '200px'
+    }
   },
   components : {
     IonImg,
@@ -93,24 +77,30 @@ export default {
     IonCardSubtitle, 
     IonCardTitle
   },
-  data() {
-    return {
-      baseURL: axios.defaults.baseURL,
-      dataSelected: null,
-      setUrl
-    }
-  },
-  mounted(){
-  },
-  updated(){
-  },
-  methods:{
-    touch(ev,data){
-      this.$emit("touchData",{
-        event: ev,
-        data: data
-      })
+  setup(){
+    return{
+      setUrl,
+      bookmarkOutline
     }
   }
 };
 </script>
+
+<style >
+  .price-product{
+     font-size: 20px ;
+    font-weight: 600;
+    color: #000;
+  }
+
+  .text-product{
+    padding-left: 10px;
+  }
+
+  .title-product {
+    color: #999999;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 5px;
+  }
+</style>

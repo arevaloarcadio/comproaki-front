@@ -41,6 +41,20 @@
                   </div>
                 </div>
               </ion-col>
+              
+              <ion-col  sizeXs="12">
+                <div class="container">
+                  <label class="label-input">Tipo de Tienda</label>
+                  <div class="input-container">
+                    <ion-select interface="action-sheet" v-model="type" class="input-text">
+                      <ion-select-option v-for="type in types" :key="type" :value="type">
+                        {{type}}
+                      </ion-select-option>
+                    </ion-select>
+                  </div>
+                </div>
+              </ion-col>
+
               <ion-col  sizeXs="12">
                 <div class="container">
                   <label class="label-input">Ciudad</label>
@@ -200,6 +214,7 @@ export default defineComponent({
       baseURL: axios.defaults.baseURL,
       countries,
       stores: [],
+      types: ['Restaurant','Tienda'],
       states: [],
       tags: [],
       selected_tags: [],
@@ -210,6 +225,7 @@ export default defineComponent({
       name: null,
       state: null,
       city: null,
+      type: null,
       postal_code: null,
       phone: null,
       address: null,
@@ -222,6 +238,7 @@ export default defineComponent({
     this.name = this.$route.query.name  
     this.state = this.$route.query.state  
     this.city = this.$route.query.city  
+    this.type = this.$route.query.type  
     this.postal_code  = this.$route.query.postal_code 
     this.phone  = this.$route.query.phone 
     this.address  = this.$route.query.address 
@@ -242,6 +259,7 @@ export default defineComponent({
       formData.append("name",this.name)
       formData.append("state",this.state)
       formData.append("city",this.city)
+      formData.append("type",this.type)
       formData.append("postal_code",this.postal_code)
       formData.append("phone",this.phone)
       formData.append("address",this.address)

@@ -18,6 +18,7 @@ import piniaPersist from 'pinia-plugin-persist'
 import MenuTabs from './components/MenuTabs.vue'
 import LoadingCard from './components/LoadingCard.vue'
 import LoadingBar from './components/LoadingBar.vue'
+import Card from './components/Card.vue'
 
 const pinia = createPinia()
 pinia.use(piniaPersist)
@@ -32,6 +33,7 @@ app.component('BaseViewPage', BaseViewPage);
 app.component('LoadingCard', LoadingCard);
 app.component('LoadingBar', LoadingBar);
 app.component('MenuTabs', MenuTabs);
+app.component('Card', Card);
 
 router.isReady().then(() => {
 	app.config.globalProperties.$baseURL = axios.defaults.baseURL;

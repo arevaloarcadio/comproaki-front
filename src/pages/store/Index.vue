@@ -35,12 +35,26 @@
 
     <template #default-view-body>
       <LoadingCard v-if="!loading"/>
-      <CardDashboard 
-        v-if="loading" 
-        :data="stores?.data" 
-        :tags="true"
-        @clickData="getKeyStore($event)"
-      ></CardDashboard>
+      <ion-row v-if="loading">
+        <ion-col 
+          v-for="(store,key) in stores.data" 
+          :key="key" 
+          sizeLg="3" 
+          sizeMd="4" 
+          sizeXs="12"
+        >
+          <CardStore 
+            :title="store.name"
+            :image="store.image"
+            :data="store"
+            label="store"
+            :cart="false"
+            :icon="false"
+            heightImg='120px'
+            @click="getKeyStore(store)"
+          ></CardStore>
+        </ion-col>
+      </ion-row>
     </template>
 
     <template #default-view-footer>
@@ -66,14 +80,14 @@ import {
 } from '@ionic/vue';
 import { storefrontOutline, search } from 'ionicons/icons';
 import axios from 'axios'
-import CardDashboard from '@/components/CardDashboardComponent.vue'
+import CardStore from '@/components/CardStore.vue'
 import ListAutoComplete from '@/components/ListAutoComplete.vue'
 
 export default {
   name: 'Dashboard',
   components : {
     ListAutoComplete,
-    CardDashboard,
+    CardStore,
     IonContent,
     IonHeader,
     IonIcon,

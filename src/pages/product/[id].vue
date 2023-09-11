@@ -10,12 +10,26 @@
               <ion-spinner v-if="loading" class="product-spinner" name="circular"></ion-spinner>
             </div> 
             <ion-img v-if="!loading" :alt="store.name" :src="setUrl(store.image)" />
-            <ion-card-content>
+            <ion-card-content style="width: 400px;">
               <ion-list>
                 <ion-item-group>
-                
                   <ion-item lines="none">
-                    <ion-label class="not-white-space">{{store?.name}}</ion-label>
+                    <ion-row>
+                      <ion-col>
+                        <ion-label class="not-white-space">{{store?.name}}</ion-label>
+                      </ion-col>
+                      
+                      <ion-col v-if="follow" sizeLg="6" sizeXs="12">
+                        <button class="button-follower" color="primary" @click="setNotFollow">
+                          Seguiendo
+                        </button>
+                      </ion-col>
+                      <ion-col sizeLg="6" sizeXs="12" v-else>
+                        <button class="button-follow" color="primary" @click="setFollow">
+                          Seguir
+                        </button>
+                      </ion-col>
+                    </ion-row>
                   </ion-item>
                 </ion-item-group>
               </ion-list>
@@ -30,7 +44,6 @@
             <ion-row>
               <ion-col sizeLg="4" sizeMd="6" sizeXs="12">
                 <ion-title><b>{{product?.name}}</b></ion-title>
-                
                 <ion-img :alt="product.name" :src="setUrl(product.image)" />
               </ion-col>
               <ion-col sizeLg="8" sizeMd="6" sizeXs="12">
@@ -49,10 +62,11 @@
               </ion-col>
             </ion-row>
           </ion-card>
+          <LoadingCard v-if="loadingProducts"/>
+          <CardDashboard v-if="!loadingProducts" :data="products" @clickData="getKeyStore($event)"></CardDashboard>
         </ion-col>
-        
         <ion-col>
-
+        
         </ion-col>
       </ion-row>
     </template>
@@ -83,11 +97,14 @@ import {
 import { useUserStore } from '@/plugins/store'
 import axios from 'axios'
 import { setUrl } from '@/plugins/utils/img-src' 
+import { checkFollow_ , setFollow_, setNotFollow_ } from '@/plugins/utils/follower' 
+import CardDashboard from '@/components/CardProduct.vue'
 
 export default defineComponent({
   name: 'App',
   components : {
-    IonHeader
+    IonHeader,
+    CardDashboard
   },
   setup(){ 
     return{
@@ -96,7 +113,10 @@ export default defineComponent({
       add,
       trashOutline,
       pencilOutline,
-      arrowBackOutline
+      arrowBackOutline,
+      checkFollow_,
+      setFollow_, 
+      setNotFollow_ 
     }
   },
   data() {
@@ -107,7 +127,8 @@ export default defineComponent({
       store: {name : "Cargando" , image : ''},
       follow : 0,
       user: null,
-      loading : true
+      loading : true,
+      loadingProducts : true,
     }
   },
   created(){
@@ -116,6 +137,7 @@ export default defineComponent({
     this.product = this.$route.query
     this.checkFollow()
     this.getStore()
+    this.getRelatedProducts()
   },
   mounted(){
     this.hideHeader()
@@ -141,6 +163,15 @@ export default defineComponent({
         element.style.display = 'block';
       })
     },
+    getKeyStore(product){
+      console.log(product)
+      this.$router.push({
+        path : '/product/'+product.id, 
+        query : {
+          ...product
+        }
+      })
+    },
     getStore(){
       axios.get('/api/stores/'+this.product.store_id)
       .then(res => {
@@ -151,13 +182,20 @@ export default defineComponent({
         this.loading = false
       })
     },
+    getRelatedProducts(){
+      axios.get('/api/products/relatedProducts/'+this.product.store_id)
+      .then(res => {
+        this.products = res.data.data
+      }).catch(error => {
+        console.log(error)
+      }).finally(()=>{
+        this.loadingProducts = false
+      })
+    },
     setFollow(){
       this.follow = 1
       
-      axios.post('/api/followers',{
-        user_id: this.user.id, 
-        store_id:this.product.store_id
-      })
+      this.setFollow_(this.user.id,this.product.store_id)
       .then(res => {
         console.log(res.data)
       }).catch(error => {
@@ -167,7 +205,7 @@ export default defineComponent({
     setNotFollow(){
       this.follow = 0
       
-      axios.post('/api/followers/delete/'+this.user.id+'/'+this.product.store_id)
+      this.setNotFollow_(this.user.id,this.product.store_id)
       .then(res => {
         console.log(res.data)
       }).catch(error => {
@@ -175,7 +213,7 @@ export default defineComponent({
       })
     },
     checkFollow(){
-      axios.get('/api/followers/check/'+this.user.id+'/'+this.product.store_id)
+      this.checkFollow_(this.user.id,this.product.store_id)
       .then(res => {
         this.follow = res.data.data
       }).catch(error => {
@@ -246,4 +284,34 @@ export default defineComponent({
     width: 100px;
     height: 100px;
   }
+
+  .button-follow{
+  border: 1px solid #2dd36f;
+  background: rgb(255, 255, 255);
+  border-radius: 10px;
+  padding: 5px 5px;
+
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  color: #2dd36f;
+  width: 120px;
+}
+
+.button-follower{
+  border: 1px solid #2dd36f;
+  background: rgb(255, 255, 255);
+  border-radius: 10px;
+  padding: 5px 5px;
+  background: #2dd36f;
+  border-radius: 10px;
+  color: #FFFFFF;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 20px;
+  width: 120px;
+}
 </style>

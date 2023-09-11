@@ -87,12 +87,12 @@
 
 <script lang="ts">
 
-import { IonButton,IonCol,IonRow } from "@ionic/vue";
 import axios from 'axios'
 import toast from '@/plugins/toast'
+import jwtToken from '@/plugins/jwt/jwt-token'
+import { IonButton, IonCol, IonRow } from "@ionic/vue";
 import { useUserStore } from '@/plugins/store';
 import { useRouter } from 'vue-router';
-import jwtToken from '@/plugins/jwt/jwt-token'
 import { FacebookLogin } from '@capacitor-community/facebook-login';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 
@@ -152,7 +152,12 @@ export default {
           picture: object;
         }>({ fields: ['email','name','picture','id'] });
         
-        this.userStore.signUpProvider(profile.name,profile.email,profile.picture.data.url,'facebook')
+        this.userStore.signUpProvider(
+          profile.name,
+          profile.email,
+          profile.picture.data.url,
+          'facebook'
+        )
         .then((res:any) => {
           loading.dismiss()
           console.log(res)
@@ -178,7 +183,12 @@ export default {
 
         loading.present();
 
-        this.userStore.signUpProvider(result.name,result.email,result.imageUrl,'google')
+        this.userStore.signUpProvider(
+          result.name,
+          result.email,
+          result.imageUrl,
+          'google'
+        )
         .then((res:any) => {
           loading.dismiss()
           console.log(res)

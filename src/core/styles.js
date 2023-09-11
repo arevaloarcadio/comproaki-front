@@ -6,6 +6,8 @@ import '../styles/pages.css';
 /* Theme variables */
 import '../theme/variables.css';
 
+import '../theme/media-queries.css';
+
 import '../assets/bootstrap-grid.min.css';
 
 // eslint-disable-next-line import/no-unresolved

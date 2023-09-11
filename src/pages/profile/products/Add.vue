@@ -47,8 +47,6 @@
                 </div>
               </ion-col>
               
-              
-              
               <ion-col sizeXs="12">
                 <div class="container">
                   <label class="label-input">Precio</label>
@@ -57,6 +55,18 @@
                   </div>
                 </div>
               </ion-col> 
+              
+              <ion-col  sizeXs="12">
+                <div class="container">
+                  <label class="label-input">Categoria</label>
+                  <div class="input-container" @click="selectCategory">
+                    <input type="text" v-model="category.name"  class="input-text">
+                    <i>
+                      <ion-icon :icon="caretDownOutline" style="margin-top: -6px" class="tag-icon"></ion-icon>
+                    </i>
+                  </div>
+                </div>
+              </ion-col>
 
               <ion-col  sizeXs="12">
                 <div class="container">
@@ -66,6 +76,7 @@
                   </div>
                 </div>
               </ion-col>
+
               <ion-col sizeXs="12">
                 <div style="justify-content: center;display: flex;">
                   <ion-button color="primary" @click="postStore()">
@@ -78,7 +89,21 @@
           <ion-col  sizeLg="4" sizeMd="4" sizeXs="12"></ion-col>
         </ion-row>
       </div>
+      
+      <ion-popover
+        :is-open="is_open_popover_category"
+        :event="event_category_popover"
+        trigger-action="click"
+        @didDismiss="is_open_popover_category = false"
+      >
+        <PopoverSelect 
+          :options="categories"
+          :option_selected="category" 
+          @clickData="getCategorySelected"
+        ></PopoverSelect>
+      </ion-popover>
     </template>
+
     <template #default-view-footer>
       <ion-footer>
 			  <ion-toolbar>
@@ -99,7 +124,8 @@ import {
   IonAvatar,
   IonSelectOption,
   IonSelect,
-  IonTextarea
+  IonTextarea,
+  IonPopover
 } from '@ionic/vue';
 
 import { 
@@ -107,12 +133,14 @@ import {
   storefrontOutline,
   add,
   arrowBackOutline,
-  createOutline
+  createOutline,
+  caretDownOutline
 } from 'ionicons/icons';
 import toast from '@/plugins/toast'
 import axios from 'axios'
 import countries from '@/data/countries.js'
 import data_states from '@/data/states.json'
+import PopoverSelect from '@/components/PopoverSelect.vue'
 
 export default defineComponent({
   name: 'App',
@@ -120,7 +148,9 @@ export default defineComponent({
     IonAvatar,
     IonSelectOption,
     IonSelect,
-    IonTextarea
+    IonTextarea,
+    IonPopover,
+    PopoverSelect
   },
   setup(){ 
     return{
@@ -128,33 +158,51 @@ export default defineComponent({
       pricetagsOutline,
       createOutline,
       add,
-      arrowBackOutline
+      arrowBackOutline,
+      caretDownOutline
     }
   },
   data() {
     return {
       countries,
+      is_open_popover_category: false,
+      event_category_popover: null,
       stores: [],
       states: [],
+      categories: [],
       name: null,
       state: null,
       store_id: null,
       country: null,
       phone: null,
       description: null,
+      category: {
+        id :null,
+        name:null
+      },
       image : null
     }
   },
   mounted(){
     this.getStores()
+    
   },
   methods:{
      getStores(){
       axios.get('/api/stores/byUser')
       .then(res => {
         this.stores = res.data.data
-        console.log(this.stores)
         this.store_id = this.stores.data[0].id
+      }).catch(error => {
+        console.log(error)
+      }).finally(() => {
+        this.getCategories()
+      })
+    },
+    getCategories(){
+      axios.get('/api/categories/byStore/'+this.store_id +'/all')
+      .then(res => {
+        this.categories = res.data.data
       }).catch(error => {
         console.log(error)
       })
@@ -169,6 +217,7 @@ export default defineComponent({
       formData.append("name",this.name)
       formData.append("price",this.price)
       formData.append("store_id",this.store_id)
+      formData.append("category_id",this.category.id)
       formData.append("image",this.image)
       formData.append("description",this.description)
 
@@ -182,6 +231,14 @@ export default defineComponent({
          loading.dismiss()
         console.log(error)
       })
+    },
+    selectCategory(Event){
+      this.is_open_popover_category = true
+      this.event_category_popover = Event
+    },
+    getCategorySelected(category){
+      this.is_open_popover_category = false
+      this.category = category
     },
     getStates(){
       var country = data_states.data.find(country => {

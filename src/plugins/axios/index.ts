@@ -3,7 +3,7 @@ import jwtToken from '../jwt/jwt-token'
 import axios from 'axios'
 import toast from '../toast'
 
-axios.defaults.baseURL = 'http://192.168.0.78/comproaki-meta/public';
+axios.defaults.baseURL = 'http://localhost/comproaki-meta/public';
 //axios.defaults.baseURL = 'https://reclasin.realliga.com';
 
 axios.interceptors.request.use(config => {

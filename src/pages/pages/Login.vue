@@ -124,7 +124,7 @@ export default {
           name: string;
           picture: object;
         }>({ fields: ['email','name','picture','id'] });
-        
+       
         this.userStore.signUpProvider(profile.name,profile.email,profile.picture.data.url,'facebook')
         .then((res:any) => {
           loading.dismiss()
@@ -150,7 +150,7 @@ export default {
         var loading = await toast.showLoading()
 
         loading.present();
-
+        console.log(this.userStore)
         this.userStore.signUpProvider(result.name,result.email,result.imageUrl,'google')
         .then((res:any) => {
           loading.dismiss()

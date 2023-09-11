@@ -8,18 +8,32 @@
 		</template>
  
     <template #default-view-body>
-      <Card 
-        v-if="loading" 
-        :data="stores.data" 
-        :tags="true"
-        :touch="true"
-        :label="label"
-        @touchData="touchStore($event)"
-        @click="clickStore($event)"
-      ></Card>
-
-      <ion-fab 
-        v-if="!fabActivated && stores?.data?.length == 0" 
+      <LoadingCard v-if="!loading"/>
+      <ion-row v-if="loading">
+        <ion-col 
+          v-for="(store,key) in stores.data" 
+          :key="key" 
+          sizeLg="3" 
+          sizeMd="4" 
+          sizeXs="12"
+        >
+          <CardStore 
+            :id="label+'-'+key"
+            :title="store.name"
+            :image="store.image"
+            :data="store"
+            label="store"
+            :cart="false"
+            :icon="false"
+            heightImg='120px'
+            @touchData="touchStore($event,key)"
+            @click="clickStore($event,key)"
+          ></CardStore>
+        </ion-col>
+      </ion-row>
+      <!--v-if="!fabActivated && stores?.data?.length == 0" -->
+      <ion-fab
+        v-if="!fabActivated" 
         slot="fixed" 
         vertical="bottom" 
         horizontal="end"
@@ -74,7 +88,7 @@ import {
   defineComponent 
 } from 'vue';
 import axios from 'axios'
-import Card from '@/components/CardComponent.vue'
+import CardStore from '@/components/CardStore.vue'
 import { 
   pencilOutline,
   trashOutline,
@@ -84,7 +98,7 @@ import {
 export default defineComponent({
   name: 'App',
   components : {
-    Card
+    CardStore
   },
   data() {
     return {
@@ -132,8 +146,7 @@ export default defineComponent({
         }
       })
     },
-    touchStore(ev){
-      const key = ev.event.target.id.split('-')[1]
+    touchStore(ev,key){
       const btn = document.querySelector('#'+this.label+'-'+key)
       const self = this
       
@@ -142,15 +155,16 @@ export default defineComponent({
       const stay_touch = setTimeout(function() { 
         btns.forEach((btn) => {
           btn.classList.remove("data-selected");
+          btn.classList.remove("card-active");
         })
         
         self.storeSelected = self.stores.data[key]
         btn.classList.add("data-selected");
+        btn.classList.add("card-active");
         self.fabActivated = true
       }, 500);
     },
-    clickStore(ev){
-      const key = ev.target.id.split('-')[1]
+    clickStore(ev,key){
       const btn = document.querySelector('#'+this.label+'-'+key)
       const self = this
       
@@ -158,11 +172,13 @@ export default defineComponent({
       
       btns.forEach((btn) => {
         btn.classList.remove("data-selected");
+        btn.classList.remove("card-active");
       })
       
       self.storeSelected = self.stores.data[key]
     
       btn.classList.add("data-selected");
+      btn.classList.add("card-active");
       self.fabActivated = true
     }
   }
